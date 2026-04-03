@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -38,22 +37,40 @@ import info.yuryv.androidx_credentials_demo.ui.components.InfoBanner
 import info.yuryv.androidx_credentials_demo.ui.components.ResultDisplay
 import info.yuryv.androidx_credentials_demo.ui.components.SectionHeader
 import info.yuryv.androidx_credentials_demo.util.MockPasskeyData
+import info.yuryv.androidx_credentials_demo.viewmodel.PasskeyUiState
 import info.yuryv.androidx_credentials_demo.viewmodel.PasskeyViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasskeyScreen(
     viewModel: PasskeyViewModel,
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
+    PasskeyScreenContent(
+        uiState = uiState,
+        onBack = onBack,
+        onRegister = { viewModel.registerPasskey(activity) },
+        onAuthenticate = { viewModel.authenticateWithPasskey(activity) },
+        onClearError = viewModel::clearError,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasskeyScreenContent(
+    uiState: PasskeyUiState,
+    onBack: () -> Unit,
+    onRegister: () -> Unit,
+    onAuthenticate: () -> Unit,
+    onClearError: () -> Unit,
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.errorMessage) {
         val msg = uiState.errorMessage ?: return@LaunchedEffect
         snackbarHostState.showSnackbar(msg)
-        viewModel.clearError()
+        onClearError()
     }
 
     Scaffold(
@@ -87,7 +104,7 @@ fun PasskeyScreen(
             SectionHeader("Register")
 
             Button(
-                onClick = { viewModel.registerPasskey(activity) },
+                onClick = onRegister,
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -101,7 +118,7 @@ fun PasskeyScreen(
             SectionHeader("Authenticate")
 
             OutlinedButton(
-                onClick = { viewModel.authenticateWithPasskey(activity) },
+                onClick = onAuthenticate,
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             ) {

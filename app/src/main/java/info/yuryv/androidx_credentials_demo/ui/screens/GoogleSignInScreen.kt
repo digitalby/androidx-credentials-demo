@@ -41,22 +41,40 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import info.yuryv.androidx_credentials_demo.ui.components.InfoBanner
 import info.yuryv.androidx_credentials_demo.ui.components.SectionHeader
+import info.yuryv.androidx_credentials_demo.viewmodel.GoogleSignInUiState
 import info.yuryv.androidx_credentials_demo.viewmodel.GoogleSignInViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GoogleSignInScreen(
     viewModel: GoogleSignInViewModel,
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
+    GoogleSignInScreenContent(
+        uiState = uiState,
+        onBack = onBack,
+        onSignIn = { viewModel.signInWithGoogle(activity) },
+        onSignOut = viewModel::signOut,
+        onClearError = viewModel::clearError,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GoogleSignInScreenContent(
+    uiState: GoogleSignInUiState,
+    onBack: () -> Unit,
+    onSignIn: () -> Unit,
+    onSignOut: () -> Unit,
+    onClearError: () -> Unit,
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.errorMessage) {
         val msg = uiState.errorMessage ?: return@LaunchedEffect
         snackbarHostState.showSnackbar(msg)
-        viewModel.clearError()
+        onClearError()
     }
 
     Scaffold(
@@ -99,7 +117,7 @@ fun GoogleSignInScreen(
             }
 
             Button(
-                onClick = { viewModel.signInWithGoogle(activity) },
+                onClick = onSignIn,
                 enabled = !uiState.isLoading && !uiState.isSignedIn,
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -107,7 +125,7 @@ fun GoogleSignInScreen(
             }
 
             OutlinedButton(
-                onClick = { viewModel.signOut() },
+                onClick = onSignOut,
                 enabled = !uiState.isLoading && uiState.isSignedIn,
                 modifier = Modifier.fillMaxWidth(),
             ) {

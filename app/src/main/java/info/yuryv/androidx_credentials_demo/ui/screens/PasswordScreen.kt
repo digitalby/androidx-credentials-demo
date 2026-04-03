@@ -38,28 +38,52 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import info.yuryv.androidx_credentials_demo.ui.components.InfoBanner
 import info.yuryv.androidx_credentials_demo.ui.components.ResultDisplay
 import info.yuryv.androidx_credentials_demo.ui.components.SectionHeader
+import info.yuryv.androidx_credentials_demo.viewmodel.PasswordUiState
 import info.yuryv.androidx_credentials_demo.viewmodel.PasswordViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PasswordScreen(
     viewModel: PasswordViewModel,
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val snackbarHostState = remember { SnackbarHostState() }
     val activity = LocalContext.current as Activity
+    PasswordScreenContent(
+        uiState = uiState,
+        onBack = onBack,
+        onUsernameChange = viewModel::onUsernameChange,
+        onPasswordChange = viewModel::onPasswordChange,
+        onSave = { viewModel.savePassword(activity) },
+        onRetrieve = { viewModel.getSavedPassword(activity) },
+        onClearError = viewModel::clearError,
+        onClearSaveSuccess = viewModel::clearSaveSuccess,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordScreenContent(
+    uiState: PasswordUiState,
+    onBack: () -> Unit,
+    onUsernameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onSave: () -> Unit,
+    onRetrieve: () -> Unit,
+    onClearError: () -> Unit,
+    onClearSaveSuccess: () -> Unit,
+) {
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.errorMessage) {
         val msg = uiState.errorMessage ?: return@LaunchedEffect
         snackbarHostState.showSnackbar(msg)
-        viewModel.clearError()
+        onClearError()
     }
 
     LaunchedEffect(uiState.saveSuccess) {
         if (uiState.saveSuccess) {
             snackbarHostState.showSnackbar("Password saved.")
-            viewModel.clearSaveSuccess()
+            onClearSaveSuccess()
         }
     }
 
@@ -88,7 +112,7 @@ fun PasswordScreen(
 
             OutlinedTextField(
                 value = uiState.username,
-                onValueChange = viewModel::onUsernameChange,
+                onValueChange = onUsernameChange,
                 label = { Text("Username") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -96,7 +120,7 @@ fun PasswordScreen(
 
             OutlinedTextField(
                 value = uiState.password,
-                onValueChange = viewModel::onPasswordChange,
+                onValueChange = onPasswordChange,
                 label = { Text("Password") },
                 singleLine = true,
                 visualTransformation = PasswordVisualTransformation(),
@@ -105,7 +129,7 @@ fun PasswordScreen(
             )
 
             Button(
-                onClick = { viewModel.savePassword(activity) },
+                onClick = onSave,
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -120,7 +144,7 @@ fun PasswordScreen(
             )
 
             OutlinedButton(
-                onClick = { viewModel.getSavedPassword(activity) },
+                onClick = onRetrieve,
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -128,14 +152,14 @@ fun PasswordScreen(
             }
 
             if (uiState.retrievedUsername != null) {
-                ResultDisplay(label = "Retrieved username", content = uiState.retrievedUsername!!)
+                ResultDisplay(label = "Retrieved username", content = uiState.retrievedUsername)
             }
             if (uiState.retrievedPassword != null) {
                 // Showing the password value is intentional in this demo to illustrate
                 // what the API returns. In production, never display or store plaintext passwords.
                 ResultDisplay(
                     label = "Retrieved password (demo only — never display in production)",
-                    content = uiState.retrievedPassword!!,
+                    content = uiState.retrievedPassword,
                 )
             }
 
