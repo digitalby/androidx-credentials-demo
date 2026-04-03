@@ -3,6 +3,15 @@ plugins {
   alias(libs.plugins.kotlin.compose)
 }
 
+// Signing: read from environment variables populated by 1Password in CI,
+// or by the developer running `op run -- ./gradlew assembleRelease` locally.
+// When variables are absent the release build remains unsigned (debug-signing
+// is used automatically by AGP for local runs).
+val signingKeystoreB64: String? = System.getenv("SIGNING_KEYSTORE_B64")
+val signingStorePassword: String? = System.getenv("SIGNING_STORE_PASSWORD")
+val signingKeyAlias: String? = System.getenv("SIGNING_KEY_ALIAS")
+val signingKeyPassword: String? = System.getenv("SIGNING_KEY_PASSWORD")
+
 android {
   namespace = "info.yuryv.androidx_credentials_demo"
   compileSdk {
@@ -17,6 +26,24 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  }
+
+  if (signingKeystoreB64 != null && signingStorePassword != null &&
+    signingKeyAlias != null && signingKeyPassword != null
+  ) {
+    val keystoreFile = layout.buildDirectory.file("signing/release.jks").get().asFile
+    keystoreFile.parentFile.mkdirs()
+    // Decode from the base64 field stored in 1Password.
+    keystoreFile.writeBytes(java.util.Base64.getDecoder().decode(signingKeystoreB64))
+
+    signingConfigs {
+      create("release") {
+        storeFile = keystoreFile
+        storePassword = signingStorePassword
+        keyAlias = signingKeyAlias
+        keyPassword = signingKeyPassword
+      }
+    }
   }
 
   buildTypes {
@@ -35,6 +62,10 @@ android {
         "GOOGLE_WEB_CLIENT_ID",
         "\"YOUR_WEB_CLIENT_ID.apps.googleusercontent.com\"",
       )
+      val releaseSigningConfig = signingConfigs.findByName("release")
+      if (releaseSigningConfig != null) {
+        signingConfig = releaseSigningConfig
+      }
     }
   }
 

@@ -13,3 +13,8 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Release keystore decoded at build time — never commit
+*.jks
+*.keystore
+app/build/signing/
