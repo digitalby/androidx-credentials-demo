@@ -1,3 +1,5 @@
+import java.util.Base64
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
@@ -34,7 +36,7 @@ android {
     val keystoreFile = layout.buildDirectory.file("signing/release.jks").get().asFile
     keystoreFile.parentFile.mkdirs()
     // Decode from the base64 field stored in 1Password.
-    keystoreFile.writeBytes(java.util.Base64.getDecoder().decode(signingKeystoreB64))
+    keystoreFile.writeBytes(Base64.getDecoder().decode(signingKeystoreB64))
 
     signingConfigs {
       create("release") {
@@ -78,6 +80,19 @@ android {
     compose = true
     buildConfig = true
   }
+
+  testOptions {
+    unitTests {
+      // Required for Robolectric to access Android resources and assets in unit tests.
+      isIncludeAndroidResources = true
+      all { test ->
+        // Forward -Proborazzi.test.record=true (Gradle property) to the test JVM
+        // so that captureRoboImage actually writes files.
+        val recordMode = project.findProperty("roborazzi.test.record") as? String ?: "false"
+        test.systemProperty("roborazzi.test.record", recordMode)
+      }
+    }
+  }
 }
 
 dependencies {
@@ -96,6 +111,11 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.navigation.compose)
   testImplementation(libs.junit)
+  testImplementation(libs.roborazzi)
+  testImplementation(libs.roborazzi.compose)
+  testImplementation(libs.robolectric)
+  testImplementation(libs.androidx.compose.ui.test.junit4)
+  testImplementation(libs.androidx.compose.ui.test.manifest)
   androidTestImplementation(libs.androidx.junit)
   androidTestImplementation(libs.androidx.espresso.core)
   androidTestImplementation(platform(libs.androidx.compose.bom))

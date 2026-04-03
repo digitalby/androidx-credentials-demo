@@ -1,5 +1,10 @@
 # androidx.credentials Demo
 
+<p align="center">
+  <img src="docs/screenshots/hero.png" width="280" alt="Home screen — light">
+  <img src="docs/screenshots/hero_dark.png" width="280" alt="Home screen — dark">
+</p>
+
 An interactive Android playground for exploring the [Credential Manager API](https://developer.android.com/identity/sign-in/credential-manager) (`androidx.credentials`). Run it on a device or emulator to see each credential flow in action.
 
 ---

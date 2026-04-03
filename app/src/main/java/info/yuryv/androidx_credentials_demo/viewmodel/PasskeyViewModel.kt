@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import info.yuryv.androidx_credentials_demo.data.CredentialRepository
 import info.yuryv.androidx_credentials_demo.util.MockPasskeyData
+import info.yuryv.androidx_credentials_demo.util.toDisplayMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
