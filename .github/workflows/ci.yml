@@ -150,7 +150,7 @@ jobs:
           cache: 'gradle'
 
       - name: Load signing secrets from 1Password
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v4
         with:
           export-env: true
         env:
