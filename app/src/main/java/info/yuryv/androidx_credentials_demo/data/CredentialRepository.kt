@@ -2,6 +2,7 @@ package info.yuryv.androidx_credentials_demo.data
 
 import android.app.Activity
 import android.content.Context
+import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CreatePasswordRequest
 import androidx.credentials.CreatePublicKeyCredentialRequest
 import androidx.credentials.CredentialManager
@@ -10,7 +11,6 @@ import androidx.credentials.GetPasswordOption
 import androidx.credentials.GetPublicKeyCredentialOption
 import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
-import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.exceptions.NoCredentialException
 import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCredentialDomException
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -75,7 +75,6 @@ class CredentialRepository(appContext: Context) {
     ): Result<Unit> = runCatching {
         val request = CreatePasswordRequest(username, password)
         credentialManager.createCredential(activity, request)
-        Unit
     }
 
     /**
