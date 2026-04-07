@@ -1,6 +1,6 @@
 package info.yuryv.androidx_credentials_demo.ui.screens
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -47,14 +46,14 @@ fun PasswordScreen(
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current
     PasswordScreenContent(
         uiState = uiState,
         onBack = onBack,
         onUsernameChange = viewModel::onUsernameChange,
         onPasswordChange = viewModel::onPasswordChange,
-        onSave = { viewModel.savePassword(activity) },
-        onRetrieve = { viewModel.getSavedPassword(activity) },
+        onSave = { activity?.let { viewModel.savePassword(activity) } },
+        onRetrieve = { activity?.let { viewModel.getSavedPassword(activity) } },
         onClearError = viewModel::clearError,
         onClearSaveSuccess = viewModel::clearSaveSuccess,
     )

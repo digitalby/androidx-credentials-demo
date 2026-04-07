@@ -1,6 +1,6 @@
 package info.yuryv.androidx_credentials_demo.ui.screens
 
-import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import info.yuryv.androidx_credentials_demo.ui.components.InfoBanner
@@ -46,12 +45,12 @@ fun PasskeyScreen(
     onBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current
     PasskeyScreenContent(
         uiState = uiState,
         onBack = onBack,
-        onRegister = { viewModel.registerPasskey(activity) },
-        onAuthenticate = { viewModel.authenticateWithPasskey(activity) },
+        onRegister = { activity?.let { viewModel.registerPasskey(activity) } },
+        onAuthenticate = { activity?.let { viewModel.authenticateWithPasskey(activity) } },
         onClearError = viewModel::clearError,
     )
 }
