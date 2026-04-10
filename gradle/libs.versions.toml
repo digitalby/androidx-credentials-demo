@@ -12,7 +12,7 @@ composeBom = "2025.04.00"
 credentials = "1.5.0"
 googleid = "1.1.1"
 lifecycleViewmodelCompose = "2.10.0"
-navigationCompose = "2.9.0"
+navigationCompose = "2.9.7"
 roborazzi = "1.7.0"
 robolectric = "4.13"
 
