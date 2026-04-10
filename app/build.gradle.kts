@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.google.identity.googleid)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.navigation.compose)
+    testImplementation(libs.json)
     testImplementation(libs.junit)
     testImplementation(libs.roborazzi)
     testImplementation(libs.roborazzi.compose)
