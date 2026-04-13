@@ -40,7 +40,6 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(sdk = [34])
 class ScreenshotTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -109,9 +108,10 @@ class ScreenshotTest {
         composeTestRule.setContent {
             AndroidxcredentialsdemoTheme(darkTheme = false, dynamicColor = false) {
                 PasskeyScreenContent(
-                    uiState = PasskeyUiState(
-                        registrationResult = """{"id":"abc123","type":"public-key","response":{}}""",
-                    ),
+                    uiState =
+                        PasskeyUiState(
+                            registrationResult = """{"id":"abc123","type":"public-key","response":{}}""",
+                        ),
                     onBack = {},
                     onRegister = {},
                     onAuthenticate = {},
@@ -152,12 +152,13 @@ class ScreenshotTest {
         composeTestRule.setContent {
             AndroidxcredentialsdemoTheme(darkTheme = false, dynamicColor = false) {
                 PasswordScreenContent(
-                    uiState = PasswordUiState(
-                        username = "alice@example.com",
-                        password = "hunter2",
-                        retrievedUsername = "alice@example.com",
-                        retrievedPassword = "hunter2",
-                    ),
+                    uiState =
+                        PasswordUiState(
+                            username = "alice@example.com",
+                            password = "hunter2",
+                            retrievedUsername = "alice@example.com",
+                            retrievedPassword = "hunter2",
+                        ),
                     onBack = {},
                     onUsernameChange = {},
                     onPasswordChange = {},
@@ -198,11 +199,12 @@ class ScreenshotTest {
         composeTestRule.setContent {
             AndroidxcredentialsdemoTheme(darkTheme = false, dynamicColor = false) {
                 GoogleSignInScreenContent(
-                    uiState = GoogleSignInUiState(
-                        isSignedIn = true,
-                        userDisplayName = "Alice Example",
-                        userEmail = "alice@example.com",
-                    ),
+                    uiState =
+                        GoogleSignInUiState(
+                            isSignedIn = true,
+                            userDisplayName = "Alice Example",
+                            userEmail = "alice@example.com",
+                        ),
                     onBack = {},
                     onSignIn = {},
                     onSignOut = {},

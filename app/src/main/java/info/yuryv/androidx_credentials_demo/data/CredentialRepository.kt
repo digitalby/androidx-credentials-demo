@@ -26,8 +26,9 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
  * Exception interpretation (user-readable messages) is the responsibility of ViewModels;
  * this class surfaces exceptions transparently via [Result.failure].
  */
-class CredentialRepository(appContext: Context) {
-
+class CredentialRepository(
+    appContext: Context,
+) {
     private val credentialManager = CredentialManager.create(appContext)
 
     /**
@@ -42,11 +43,12 @@ class CredentialRepository(appContext: Context) {
     suspend fun createPasskey(
         activity: Activity,
         requestJson: String,
-    ): Result<String> = runCatching {
-        val request = CreatePublicKeyCredentialRequest(requestJson)
-        val response = credentialManager.createCredential(activity, request)
-        (response as PublicKeyCredential).authenticationResponseJson
-    }
+    ): Result<String> =
+        runCatching {
+            val request = CreatePublicKeyCredentialRequest(requestJson)
+            val response = credentialManager.createCredential(activity, request)
+            (response as PublicKeyCredential).authenticationResponseJson
+        }
 
     /**
      * Initiates passkey authentication. The [requestJson] must be a valid
@@ -57,12 +59,13 @@ class CredentialRepository(appContext: Context) {
     suspend fun getPasskey(
         activity: Activity,
         requestJson: String,
-    ): Result<String> = runCatching {
-        val option = GetPublicKeyCredentialOption(requestJson)
-        val request = GetCredentialRequest(listOf(option))
-        val response = credentialManager.getCredential(activity, request)
-        (response.credential as PublicKeyCredential).authenticationResponseJson
-    }
+    ): Result<String> =
+        runCatching {
+            val option = GetPublicKeyCredentialOption(requestJson)
+            val request = GetCredentialRequest(listOf(option))
+            val response = credentialManager.getCredential(activity, request)
+            (response.credential as PublicKeyCredential).authenticationResponseJson
+        }
 
     /**
      * Saves a username/password pair via the Credential Manager.
@@ -72,10 +75,11 @@ class CredentialRepository(appContext: Context) {
         activity: Activity,
         username: String,
         password: String,
-    ): Result<Unit> = runCatching {
-        val request = CreatePasswordRequest(username, password)
-        credentialManager.createCredential(activity, request)
-    }
+    ): Result<Unit> =
+        runCatching {
+            val request = CreatePasswordRequest(username, password)
+            credentialManager.createCredential(activity, request)
+        }
 
     /**
      * Retrieves a saved password credential from the user's autofill provider.
@@ -103,23 +107,27 @@ class CredentialRepository(appContext: Context) {
         activity: Activity,
         webClientId: String,
         nonce: String? = null,
-    ): Result<GoogleIdTokenCredential> = runCatching {
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(webClientId)
-            .setNonce(nonce)
-            .build()
-        val request = GetCredentialRequest(listOf(googleIdOption))
-        val response = credentialManager.getCredential(activity, request)
-        GoogleIdTokenCredential.createFrom(response.credential.data)
-    }
+    ): Result<GoogleIdTokenCredential> =
+        runCatching {
+            val googleIdOption =
+                GetGoogleIdOption
+                    .Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(webClientId)
+                    .setNonce(nonce)
+                    .build()
+            val request = GetCredentialRequest(listOf(googleIdOption))
+            val response = credentialManager.getCredential(activity, request)
+            GoogleIdTokenCredential.createFrom(response.credential.data)
+        }
 
     /**
      * Clears the credential state (sign-out). Call this before allowing the user to
      * sign in with a different Google account; otherwise the picker shows only the
      * previously authorized account.
      */
-    suspend fun clearCredentialState(): Result<Unit> = runCatching {
-        credentialManager.clearCredentialState(ClearCredentialStateRequest())
-    }
+    suspend fun clearCredentialState(): Result<Unit> =
+        runCatching {
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+        }
 }

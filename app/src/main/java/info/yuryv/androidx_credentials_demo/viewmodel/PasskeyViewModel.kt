@@ -22,19 +22,20 @@ data class PasskeyUiState(
     val errorMessage: String? = null,
 )
 
-class PasskeyViewModel(private val repository: CredentialRepository) : ViewModel() {
-
+class PasskeyViewModel(
+    private val repository: CredentialRepository,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(PasskeyUiState())
     val uiState: StateFlow<PasskeyUiState> = _uiState.asStateFlow()
 
     fun registerPasskey(activity: Activity) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, registrationResult = null) }
-            repository.createPasskey(activity, MockPasskeyData.registrationRequest)
+            repository
+                .createPasskey(activity, MockPasskeyData.registrationRequest)
                 .onSuccess { json ->
                     _uiState.update { it.copy(isLoading = false, registrationResult = json) }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, errorMessage = error.toDisplayMessage()) }
                 }
         }
@@ -43,11 +44,11 @@ class PasskeyViewModel(private val repository: CredentialRepository) : ViewModel
     fun authenticateWithPasskey(activity: Activity) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, authenticationResult = null) }
-            repository.getPasskey(activity, MockPasskeyData.authenticationRequest)
+            repository
+                .getPasskey(activity, MockPasskeyData.authenticationRequest)
                 .onSuccess { json ->
                     _uiState.update { it.copy(isLoading = false, authenticationResult = json) }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, errorMessage = error.toDisplayMessage()) }
                 }
         }

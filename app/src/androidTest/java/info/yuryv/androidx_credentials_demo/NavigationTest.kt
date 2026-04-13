@@ -21,7 +21,6 @@ import org.junit.runner.RunWith
  */
 @RunWith(AndroidJUnit4::class)
 class NavigationTest {
-
     @get:Rule
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
@@ -69,5 +68,6 @@ class NavigationTest {
 private fun androidx.compose.ui.test.SemanticsNodeInteractionsProvider.onNodeWithContentDescription(
     description: String,
 ) = onNode(
-    androidx.compose.ui.test.hasContentDescription(description),
+    androidx.compose.ui.test
+        .hasContentDescription(description),
 )

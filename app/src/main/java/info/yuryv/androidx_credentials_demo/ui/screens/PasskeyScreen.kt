@@ -86,18 +86,20 @@ fun PasskeyScreenContent(
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             InfoBanner(
-                message = "Demo mode: uses hardcoded challenge data. Passkey creation requires " +
-                    "Digital Asset Links at https://${MockPasskeyData.RP_ID}/.well-known/assetlinks.json " +
-                    "linking package info.yuryv.androidx_credentials_demo with your app's signing certificate. " +
-                    "Expect CreatePublicKeyCredentialDomException without this setup.",
+                message =
+                    "Demo mode: uses hardcoded challenge data. Passkey creation requires " +
+                        "Digital Asset Links at https://${MockPasskeyData.RP_ID}/.well-known/assetlinks.json " +
+                        "linking package info.yuryv.androidx_credentials_demo with your app's signing certificate. " +
+                        "Expect CreatePublicKeyCredentialDomException without this setup.",
             )
 
             SectionHeader("Register")

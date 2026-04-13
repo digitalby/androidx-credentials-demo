@@ -14,25 +14,26 @@ import androidx.credentials.exceptions.publickeycredential.CreatePublicKeyCreden
  * This is intentionally kept in the util layer so ViewModels remain free of
  * raw exception string formatting.
  */
-fun Throwable.toDisplayMessage(): String = when (this) {
-    is CreatePublicKeyCredentialDomException ->
-        "Passkey creation failed: Digital Asset Links not configured for this app. " +
-            "Expected in demo mode — see the About screen for setup instructions."
+fun Throwable.toDisplayMessage(): String =
+    when (this) {
+        is CreatePublicKeyCredentialDomException ->
+            "Passkey creation failed: Digital Asset Links not configured for this app. " +
+                "Expected in demo mode — see the About screen for setup instructions."
 
-    is NoCredentialException ->
-        "No saved credentials found. Save a password first, or sign in with Google."
+        is NoCredentialException ->
+            "No saved credentials found. Save a password first, or sign in with Google."
 
-    is GetCredentialCancellationException,
-    is CreateCredentialCancellationException,
-    -> "Cancelled."
+        is GetCredentialCancellationException,
+        is CreateCredentialCancellationException,
+        -> "Cancelled."
 
-    is GetCredentialInterruptedException,
-    is CreateCredentialInterruptedException,
-    -> "Interrupted — please try again."
+        is GetCredentialInterruptedException,
+        is CreateCredentialInterruptedException,
+        -> "Interrupted — please try again."
 
-    is GetCredentialUnsupportedException,
-    is CreateCredentialUnsupportedException,
-    -> "Credential Manager is not supported on this device or OS version."
+        is GetCredentialUnsupportedException,
+        is CreateCredentialUnsupportedException,
+        -> "Credential Manager is not supported on this device or OS version."
 
-    else -> message ?: "An unexpected error occurred (${this::class.simpleName})."
-}
+        else -> message ?: "An unexpected error occurred (${this::class.simpleName})."
+    }
