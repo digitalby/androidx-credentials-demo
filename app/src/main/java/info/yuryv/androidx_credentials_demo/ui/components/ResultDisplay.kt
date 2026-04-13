@@ -23,16 +23,18 @@ fun ResultDisplay(
     isError: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val containerColor = if (isError) {
-        MaterialTheme.colorScheme.errorContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceVariant
-    }
-    val contentColor = if (isError) {
-        MaterialTheme.colorScheme.onErrorContainer
-    } else {
-        MaterialTheme.colorScheme.onSurfaceVariant
-    }
+    val containerColor =
+        if (isError) {
+            MaterialTheme.colorScheme.errorContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        }
+    val contentColor =
+        if (isError) {
+            MaterialTheme.colorScheme.onErrorContainer
+        } else {
+            MaterialTheme.colorScheme.onSurfaceVariant
+        }
 
     Column(modifier = modifier.fillMaxWidth()) {
         Text(
@@ -51,11 +53,12 @@ fun ResultDisplay(
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
                 color = contentColor,
-                modifier = Modifier
-                    .heightIn(max = 200.dp)
-                    .verticalScroll(rememberScrollState())
-                    .horizontalScroll(rememberScrollState())
-                    .padding(12.dp),
+                modifier =
+                    Modifier
+                        .heightIn(max = 200.dp)
+                        .verticalScroll(rememberScrollState())
+                        .horizontalScroll(rememberScrollState())
+                        .padding(12.dp),
             )
         }
     }

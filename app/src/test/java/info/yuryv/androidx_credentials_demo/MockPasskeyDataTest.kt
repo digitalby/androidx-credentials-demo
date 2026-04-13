@@ -14,7 +14,6 @@ import org.junit.Test
  * and works in Robolectric-free unit tests via the org.json artifact on the test classpath).
  */
 class MockPasskeyDataTest {
-
     @Test
     fun `RP ID is not blank`() {
         assertFalse(

@@ -15,7 +15,6 @@ package info.yuryv.androidx_credentials_demo.util
  * will fail with CreatePublicKeyCredentialDomException — expected in demo mode.
  */
 object MockPasskeyData {
-
     /**
      * Relying Party ID. Must match a domain whose assetlinks.json associates this app
      * (package [info.yuryv.androidx_credentials_demo] + SHA-256 signing certificate).

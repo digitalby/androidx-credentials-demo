@@ -28,12 +28,14 @@ data class PasswordUiState(
     val errorMessage: String? = null,
 )
 
-class PasswordViewModel(private val repository: CredentialRepository) : ViewModel() {
-
+class PasswordViewModel(
+    private val repository: CredentialRepository,
+) : ViewModel() {
     private val _uiState = MutableStateFlow(PasswordUiState())
     val uiState: StateFlow<PasswordUiState> = _uiState.asStateFlow()
 
     fun onUsernameChange(value: String) = _uiState.update { it.copy(username = value) }
+
     fun onPasswordChange(value: String) = _uiState.update { it.copy(password = value) }
 
     fun savePassword(activity: Activity) {
@@ -44,11 +46,11 @@ class PasswordViewModel(private val repository: CredentialRepository) : ViewMode
         }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null, saveSuccess = false) }
-            repository.savePassword(activity, state.username, state.password)
+            repository
+                .savePassword(activity, state.username, state.password)
                 .onSuccess {
                     _uiState.update { it.copy(isLoading = false, saveSuccess = true) }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, errorMessage = error.toDisplayMessage()) }
                 }
         }
@@ -59,7 +61,8 @@ class PasswordViewModel(private val repository: CredentialRepository) : ViewMode
             _uiState.update {
                 it.copy(isLoading = true, errorMessage = null, retrievedUsername = null, retrievedPassword = null)
             }
-            repository.getSavedPassword(activity)
+            repository
+                .getSavedPassword(activity)
                 .onSuccess { credential ->
                     _uiState.update {
                         it.copy(
@@ -68,17 +71,17 @@ class PasswordViewModel(private val repository: CredentialRepository) : ViewMode
                             retrievedPassword = credential.password,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     _uiState.update { it.copy(isLoading = false, errorMessage = error.toDisplayMessage()) }
                 }
         }
     }
 
     fun clearError() = _uiState.update { it.copy(errorMessage = null) }
+
     fun clearSaveSuccess() = _uiState.update { it.copy(saveSuccess = false) }
-    fun clearRetrievedCredentials() =
-        _uiState.update { it.copy(retrievedUsername = null, retrievedPassword = null) }
+
+    fun clearRetrievedCredentials() = _uiState.update { it.copy(retrievedUsername = null, retrievedPassword = null) }
 
     companion object {
         fun factory(repository: CredentialRepository): ViewModelProvider.Factory =

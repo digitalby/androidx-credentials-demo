@@ -28,23 +28,26 @@ fun AppNavigation(repository: CredentialRepository) {
         }
 
         composable(Screen.Passkey.route) {
-            val vm: PasskeyViewModel = viewModel(
-                factory = PasskeyViewModel.factory(repository),
-            )
+            val vm: PasskeyViewModel =
+                viewModel(
+                    factory = PasskeyViewModel.factory(repository),
+                )
             PasskeyScreen(viewModel = vm, onBack = { navController.popBackStack() })
         }
 
         composable(Screen.Password.route) {
-            val vm: PasswordViewModel = viewModel(
-                factory = PasswordViewModel.factory(repository),
-            )
+            val vm: PasswordViewModel =
+                viewModel(
+                    factory = PasswordViewModel.factory(repository),
+                )
             PasswordScreen(viewModel = vm, onBack = { navController.popBackStack() })
         }
 
         composable(Screen.GoogleSignIn.route) {
-            val vm: GoogleSignInViewModel = viewModel(
-                factory = GoogleSignInViewModel.factory(repository),
-            )
+            val vm: GoogleSignInViewModel =
+                viewModel(
+                    factory = GoogleSignInViewModel.factory(repository),
+                )
             GoogleSignInScreen(viewModel = vm, onBack = { navController.popBackStack() })
         }
 

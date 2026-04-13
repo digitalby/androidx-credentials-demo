@@ -25,28 +25,32 @@ data class GoogleSignInUiState(
     val errorMessage: String? = null,
 )
 
-class GoogleSignInViewModel(private val repository: CredentialRepository) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(
-        GoogleSignInUiState(
-            isClientIdMissing = BuildConfig.GOOGLE_WEB_CLIENT_ID.contains("YOUR_WEB_CLIENT"),
-        ),
-    )
+class GoogleSignInViewModel(
+    private val repository: CredentialRepository,
+) : ViewModel() {
+    private val _uiState =
+        MutableStateFlow(
+            GoogleSignInUiState(
+                isClientIdMissing = BuildConfig.GOOGLE_WEB_CLIENT_ID.contains("YOUR_WEB_CLIENT"),
+            ),
+        )
     val uiState: StateFlow<GoogleSignInUiState> = _uiState.asStateFlow()
 
     fun signInWithGoogle(activity: Activity) {
         if (_uiState.value.isClientIdMissing) {
             _uiState.update {
                 it.copy(
-                    errorMessage = "Set a real Web client ID in app/build.gradle.kts " +
-                        "under buildConfigField(\"GOOGLE_WEB_CLIENT_ID\").",
+                    errorMessage =
+                        "Set a real Web client ID in app/build.gradle.kts " +
+                            "under buildConfigField(\"GOOGLE_WEB_CLIENT_ID\").",
                 )
             }
             return
         }
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            repository.signInWithGoogle(activity, BuildConfig.GOOGLE_WEB_CLIENT_ID)
+            repository
+                .signInWithGoogle(activity, BuildConfig.GOOGLE_WEB_CLIENT_ID)
                 .onSuccess { credential ->
                     _uiState.update {
                         it.copy(
@@ -56,8 +60,7 @@ class GoogleSignInViewModel(private val repository: CredentialRepository) : View
                             userEmail = credential.id,
                         )
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     if (error is GetCredentialCancellationException) {
                         _uiState.update { it.copy(isLoading = false) }
                     } else {
